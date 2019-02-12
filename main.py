@@ -42,5 +42,6 @@ for ids in list_split(100, ids_list):
                 file.write(f"block:{sn}")
             time.sleep(8)
         except Exception as e:
+            print(f"error:{sn}")
             print(e)
             time.sleep(60)

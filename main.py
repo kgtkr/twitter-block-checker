@@ -3,6 +3,7 @@ import config
 import glob
 import json
 import is_blocked
+import time
 
 
 def list_split(n: int, list):
@@ -27,15 +28,19 @@ for path in glob.glob("friends/*.data.json"):
 ids_list = []
 
 for user in data.keys():
-    if data[user] >= 5:
+    if data[user] >= 3:
         ids_list.append(user)
 
 file = open("block", 'a')
 
 for ids in list_split(100, ids_list):
     for user in api.lookup_users(user_ids=ids):
-        sn = user.screen_name
-        print(f"check:{sn}")
-        if is_blocked.is_blocked(sn):
-            print(sn)
-            file.write(f"block:{sn}")
+        try:
+            sn = user.screen_name
+            if is_blocked.is_blocked(sn):
+                print(sn)
+                file.write(f"block:{sn}")
+            time.sleep(8)
+        except Exception as e:
+            print(e)
+            time.sleep(60)

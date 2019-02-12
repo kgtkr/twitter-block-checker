@@ -28,7 +28,7 @@ for path in glob.glob("friends/*.data.json"):
 ids_list = []
 
 for user in data.keys():
-    if data[user] >= 3:
+    if data[user] >= 10:
         ids_list.append(user)
 
 file = open("block", 'a')

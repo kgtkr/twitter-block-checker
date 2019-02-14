@@ -38,8 +38,8 @@ for ids in list_split(100, ids_list):
         try:
             sn = user.screen_name
             if is_blocked.is_blocked(sn):
-                print(sn)
-                file.write(f"block:{sn}")
+                print(f"block:{sn}")
+                file.write(f"{sn}\n")
             time.sleep(8)
         except Exception as e:
             print(f"error:{sn}")

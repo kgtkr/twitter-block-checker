@@ -4,10 +4,16 @@ import glob
 import json
 import is_blocked
 import time
+from retry import retry
 
 
 def list_split(n: int, list):
     return [list[i:i+n] for i in range(0, len(list), n)]
+
+
+@retry(delay=60)
+def lookup_users(ids):
+    api.lookup_users(user_ids=ids)
 
 
 # 認証
@@ -34,7 +40,7 @@ for i in range(10):
 file = open("block", 'a')
 
 for ids in list_split(100, ids_list):
-    for user in api.lookup_users(user_ids=ids):
+    for user in lookup_users(ids):
         try:
             sn = user.screen_name
             if is_blocked.is_blocked(sn):

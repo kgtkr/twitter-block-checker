@@ -34,9 +34,6 @@ for path in glob.glob("friends/*.data.json"):
 ids_list = [x[0]
             for x in sorted(data.items(), key=lambda x: x[1], reverse=True)]
 
-for i in range(10):
-    print(ids_list[i])
-
 file = open("block", 'a')
 
 for ids in list_split(100, ids_list):

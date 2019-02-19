@@ -13,7 +13,7 @@ def list_split(n: int, list):
 
 @retry(delay=60)
 def lookup_users(ids):
-    api.lookup_users(user_ids=ids)
+    return api.lookup_users(user_ids=ids)
 
 
 # 認証

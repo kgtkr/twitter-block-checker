@@ -25,11 +25,11 @@ for path in glob.glob("friends/*.data.json"):
             else:
                 data[user] = 1
 
-ids_list = []
+ids_list = [x[0]
+            for x in sorted(data.items(), key=lambda x: x[1], reverse=True)]
 
-for user in data.keys():
-    if data[user] >= 10:
-        ids_list.append(user)
+for i in range(10):
+    print(ids_list[i])
 
 file = open("block", 'a')
 

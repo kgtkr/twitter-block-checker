@@ -13,7 +13,7 @@ def list_split(n: int, list):
 
 @retry(delay=60)
 def lookup_users(ids):
-    return api.lookup_users(user_ids=ids)
+    return is_blocked.is_blocked(ids)
 
 
 # 認証
@@ -37,15 +37,16 @@ ids_list = [x[0]
 file = open("block", 'a')
 
 for ids in list_split(100, ids_list):
+    time.sleep(2)
     for user in lookup_users(ids):
         try:
             sn = user.screen_name
-            if is_blocked.is_blocked(sn):
+            blocked_by = user._json["blocked_by"]
+            if blocked_by:
                 print(f"block:{sn}")
                 file.write(f"{sn}\n")
-                file.flush()
-            time.sleep(8)
         except Exception as e:
             print(f"error:{sn}")
             print(e)
             time.sleep(60)
+    file.flush()

@@ -1,19 +1,20 @@
-import urllib.request
-import json
+import tweepy
+import config
+from tweepy.binder import bind_api
+from tweepy.utils import list_to_csv
 import config
 
 
-def is_blocked(screen_name: str)->bool:
-    headers = {"content-type": "application/json",
-               "authorization": "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA",
-               "x-csrf-token": config.ct0,
-               "cookie": f'auth_token={config.auth_token};ct0={config.ct0};'
-               }
-    obj = {"variables": json.dumps(
-        {"screen_name": screen_name, "withHighlightedLabel": True}), "queryId": "tuUVSRXkII44Y4J7rhbw_g"}
+def is_blocked(ids):
+    auth = tweepy.OAuthHandler(config.ck, config.cs)
+    auth.set_access_token(config.tk, config.ts)
+    api = tweepy.API(auth)
 
-    request = urllib.request.Request(
-        "https://api.twitter.com/graphql/tuUVSRXkII44Y4J7rhbw_g", data=json.dumps(obj).encode("utf-8"), method="POST", headers=headers)
-    with urllib.request.urlopen(request) as response:
-        response_body = response.read().decode("utf-8")
-        return json.loads(response_body)["data"]["user"]["legacy"]["blocked_by"]
+    return bind_api(
+        api=api,
+        path='/users/lookup.json',
+        payload_type='user', payload_list=True,
+        method='POST',
+        allowed_param=['user_id', 'screen_name',
+                       'include_entities', 'include_blocked_by']
+    )(post_data={"include_blocked_by": "true", "user_id": ids})

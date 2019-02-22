@@ -43,8 +43,8 @@ for ids in list_split(100, ids_list):
             sn = user.screen_name
             blocked_by = user._json["blocked_by"]
             if blocked_by:
-                print(f"block:{sn}")
-                file.write(f"{sn}\n")
+                print(f"block:{sn} {user.id}")
+                file.write(f"{sn} {user.id}\n")
         except Exception as e:
             print(f"error:{sn}")
             print(e)

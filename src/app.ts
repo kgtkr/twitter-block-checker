@@ -1,16 +1,16 @@
 import { loadState, progress, saveState, sleep } from "./lib";
-import * as Twit from "twit";
+import Twit from "twit";
 import { config } from "dotenv";
 
 config();
 
 async function main() {
   const state = loadState();
-  const twit: Twit = new (Twit as any)({
-    consumer_key: process.env["CK"],
-    consumer_secret: process.env["CS"],
-    access_token: process.env["TK"],
-    access_token_secret: process.env["TS"],
+  const twit: Twit = new Twit({
+    consumer_key: process.env["CK"]!,
+    consumer_secret: process.env["CS"]!,
+    access_token: process.env["TK"]!,
+    access_token_secret: process.env["TS"]!,
     timeout_ms: 60 * 1000,
     strictSSL: true
   });

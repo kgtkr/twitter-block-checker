@@ -1,0 +1,31 @@
+{
+  "name": "block-checker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "start": "node dist/app.js",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kgtkr/block-checker.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kgtkr/block-checker/issues"
+  },
+  "homepage": "https://github.com/kgtkr/block-checker#readme",
+  "devDependencies": {
+    "@types/node": "^13.9.1",
+    "@types/twit": "^2.2.23",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "dotenv": "^8.2.0",
+    "fp-ts": "^2.5.3",
+    "twit": "^2.2.11"
+  }
+}

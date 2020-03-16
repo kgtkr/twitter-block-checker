@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as array from "fp-ts/lib/Array";
 import * as Twit from "twit";
+import { cons } from "fp-ts/lib/ReadonlyNonEmptyArray";
 
 export type Job =
   | { type: "fetchAuthUserId" }
@@ -101,34 +102,43 @@ export async function progress(twit: Twit, state: State): Promise<void> {
     }
     case "fetchFollowsFollows": {
       await sleep(60 * 1000);
-      const res = await twit.get("friends/ids", ({
-        user_id: job.user,
-        cursor: job.cursor,
-        stringify_ids: "true",
-        count: "5000"
-      } as any) as Twit.Params);
-      const data = res.data as any;
-      const nextCursor: string = data.next_cursor_str;
-      const ids: string[] = data.ids;
+      try {
+        const res = await twit.get("friends/ids", ({
+          user_id: job.user,
+          cursor: job.cursor,
+          stringify_ids: "true",
+          count: "5000"
+        } as any) as Twit.Params);
+        const data = res.data as any;
+        const nextCursor: string = data.next_cursor_str;
+        const ids: string[] = data.ids;
 
-      let userFollows_ = state.followsFollows.get(job.user);
-      if (userFollows_ === undefined) {
-        userFollows_ = new Set();
-        state.followsFollows.set(job.user, userFollows_);
-      }
-      const userFollows = userFollows_;
-      ids.forEach(id => {
-        userFollows.add(id);
-      });
-
-      if (nextCursor !== "0") {
-        state.jobs.unshift({
-          type: "fetchFollowsFollows",
-          user: job.user,
-          cursor: nextCursor
+        let userFollows_ = state.followsFollows.get(job.user);
+        if (userFollows_ === undefined) {
+          userFollows_ = new Set();
+          state.followsFollows.set(job.user, userFollows_);
+        }
+        const userFollows = userFollows_;
+        ids.forEach(id => {
+          userFollows.add(id);
         });
+
+        if (nextCursor !== "0") {
+          state.jobs.unshift({
+            type: "fetchFollowsFollows",
+            user: job.user,
+            cursor: nextCursor
+          });
+        }
+        return;
+      } catch (e) {
+        if (typeof e === "object" && e !== null && e.statusCode === 404) {
+          console.log(`${job.user} is not found`);
+          return;
+        } else {
+          throw e;
+        }
       }
-      return;
     }
     case "endFetchFollowsFollows": {
       const users = new Set<string>();

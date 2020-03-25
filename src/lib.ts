@@ -163,6 +163,9 @@ export async function progress(twit: Twit, state: State): Promise<void> {
       return;
     }
     case "checkBlocked": {
+      console.log(
+        `残りのjob:${state.jobs} ブロられ合計:${state.blockedUsers.size} ブロられてない合計:${state.nonBlockedUsers.size}`
+      );
       await sleep(1 * 1000);
       const res = await twit.get("users/lookup", ({
         user_id: job.users.join(","),
